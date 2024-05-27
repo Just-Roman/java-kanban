@@ -1,16 +1,16 @@
 package ru.practicum.task_tracker.task;
 
 public class Task {
+
     private Integer id;
+    private String name;
+    private String description;
+    private Status status;
 
     public Task(String name, String description) {
         this.name = name;
         this.description = description;
     }
-
-    private String name;
-    private String description;
-    private Status status;
 
     public Task(String name, String description, Status status) {
         this.name = name;
