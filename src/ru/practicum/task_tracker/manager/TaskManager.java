@@ -70,7 +70,7 @@ public class TaskManager {
         return epics.remove(epicId) != null;
     }
 
-    public void updateStatusEpic(Epic epic) {
+    private void updateStatusEpic(Epic epic) {
         if (epics.containsKey(epic.getId())) {
             if (epic.getSubtasks().isEmpty()) {
                 epic.setStatus(Status.NEW);
@@ -126,7 +126,7 @@ public class TaskManager {
         return subtasks.get(subtaskId);
     }
 
-    public boolean deliteSubtask(Integer id) {
+    public boolean deleteSubtask(Integer id) {
         Subtask subtask = subtasks.get(id);
         boolean removesubtask = subtasks.remove(subtask.getId()) != null;
 
@@ -135,6 +135,12 @@ public class TaskManager {
 
          updateStatusEpic(epic);
         return removesubtask;
+    }
+
+    public void deleteAllTasks() {
+        subtasks.clear();
+        tasks.clear();
+        epics.clear();
     }
 
 

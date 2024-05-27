@@ -93,8 +93,8 @@ public class Main {
         System.out.println();
 
         System.out.println("Тест 10: удаление сабтаск1 из эпика1");
-        System.out.println("Удаление сабтаск1: " + taskManager.deliteSubtask(subtask1ForEpic1.getId()));
-        System.out.println("Обновленный список тасок: " + taskManager.getSubtasks());
+        System.out.println("Удаление сабтаск1: " + taskManager.deleteSubtask(subtask1ForEpic1.getId()));
+        System.out.println("Обновленный список сабтасок: " + taskManager.getSubtasks());
         System.out.println("Обновленный статус эпика1: " + taskManager.getEpics());
         System.out.println();
 
@@ -103,6 +103,11 @@ public class Main {
         System.out.println("Обновленный список тасок: " + taskManager.getSubtasks());
         System.out.println("Обновленный список эпика: " + taskManager.getEpics());
 
+        System.out.println("Тест 12: Полное удаление");
+        taskManager.deleteAllTasks();
+        System.out.println("Проверяем список сабтасок: " + taskManager.getSubtasks());
+        System.out.println("Проверяем список эпикаов: " + taskManager.getEpics());
+        System.out.println("Проверяем список тасок: " + taskManager.getTasks());
     }
 
 
