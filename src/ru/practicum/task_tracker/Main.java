@@ -99,7 +99,7 @@ public class Main {
         System.out.println();
 
         System.out.println("Тест 11: удаление сабтаск1 и его сабтасок");
-        System.out.println("Удалить эпик1: " + taskManager.deliteEpic(epic1.getId()));
+        System.out.println("Удалить эпик1: " + taskManager.deleteEpic(epic1.getId()));
         System.out.println("Обновленный список тасок: " + taskManager.getSubtasks());
         System.out.println("Обновленный список эпика: " + taskManager.getEpics());
 
