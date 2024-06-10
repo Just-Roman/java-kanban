@@ -31,6 +31,6 @@ public class Subtask extends Task {
                 ", description='" + this.getDescription() + '\'' +
                 ", status=" + this.getStatus() +
                 ", epicId=" + epicId +
-                '}';
+                '}' + "\n";
     }
 }

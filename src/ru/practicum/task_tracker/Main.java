@@ -1,5 +1,7 @@
 package ru.practicum.task_tracker;
 
+import ru.practicum.task_tracker.manager.HistoryManager;
+import ru.practicum.task_tracker.manager.InMemoryTaskManager;
 import ru.practicum.task_tracker.manager.TaskManager;
 import ru.practicum.task_tracker.task.Epic;
 import ru.practicum.task_tracker.task.Status;
@@ -12,21 +14,15 @@ public class Main {
 
     public static void main(String[] args) {
 
-/*
-Вячеслав, доброго дня!
-            Не знаю, можно ли оставлять тесты в методе Main (об этом ничего не написано),
-            но на всякий случай оставлю =).
-            Буду рад любому комментарию!
-            Заранее спасибо!
-*/
 
-        testTasks();      // Для запуска теста таски
-        testEpicAndSubtask();  //  Для запуска теста сабтаски и эпика
+        testTasks();
+      //  testEpicAndSubtask();
 
     }
 
     private static void testTasks() {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
+        HistoryManager historyManager = Managers.getDefaultHistory();  // ?????
 
         System.out.println("Тест 1: Пустой список");
         List<Task> tasks = taskManager.getTasks();
@@ -46,15 +42,21 @@ public class Main {
         System.out.println("Обновленная таска должна иметь поля: " + taskManager.getTasks());
         System.out.println();
 
+        System.out.println("Тест 3.1: История просмотров");
+        System.out.println(taskManager.getHistory());
+        System.out.println();
+
         System.out.println("Тест 4: Удаление таски");
         boolean deleteRes = taskManager.deliteTask(task1.getId());
         System.out.println("Удаление должно пройти успешно: " + deleteRes);
         System.out.println("Список тасок пусой: " + taskManager.getTasks());
         System.out.println();
+
+
     }
 
     private static void testEpicAndSubtask() {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
 
         System.out.println("Тест 5: Пустой список эпика");
         List<Epic> epics = taskManager.getEpics();
@@ -67,16 +69,22 @@ public class Main {
         System.out.println("Создали эпик эпик без подзадач: " + taskManager.getEpics());
         System.out.println();
 
+        System.out.println("Тест 6.1: История просмотров");
+        System.out.println(taskManager.getHistory());
+        System.out.println();
+
         System.out.println("Тест 7: Создание двух сабтасок для эпика1");
         Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
         taskManager.createSubtask(subtask1ForEpic1);
         System.out.println("Пепечень сабтасок для эпика1: " + taskManager.getSubtasks());
-
         Subtask subtask2ForEpic1 = new Subtask(epic1Created.getId(), "Не забыть: ", "палатку, пенки", Status.NEW);
         taskManager.createSubtask(subtask2ForEpic1);
         System.out.println("Печать сабтасок для эпика1: " + taskManager.getSubtasks());
         System.out.println();
 
+        System.out.println("Тест 7.1: История просмотров");
+        System.out.println(taskManager.getHistory());
+        System.out.println();
 
         System.out.println("Тест 8: изменение статуса для сабтаск1, эпика1");
         subtask1ForEpic1.setStatus(Status.DONE);
@@ -90,6 +98,10 @@ public class Main {
         taskManager.updateSubtask(subtask2ForEpic1);
         System.out.println("Обновленный список тасок: " + taskManager.getSubtasks());
         System.out.println("Обновленный статус эпика1: " + taskManager.getEpics());
+        System.out.println();
+
+        System.out.println("Тест 9.1: История просмотров");
+        System.out.println(taskManager.getHistory());
         System.out.println();
 
         System.out.println("Тест 10: удаление сабтаск1 из эпика1");
@@ -109,6 +121,4 @@ public class Main {
         System.out.println("Проверяем список эпиков: " + taskManager.getEpics());
         System.out.println("Проверяем список тасок: " + taskManager.getTasks());
     }
-
-
 }
