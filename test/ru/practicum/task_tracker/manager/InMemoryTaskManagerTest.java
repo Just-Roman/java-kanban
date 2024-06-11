@@ -1,6 +1,5 @@
 package ru.practicum.task_tracker.manager;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.Managers;
 import ru.practicum.task_tracker.task.Epic;
@@ -11,15 +10,12 @@ import ru.practicum.task_tracker.task.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
 /* Вячеслав, доброго дня!
-Задания для тестов были, мягко говоря, трудные к пониманию и реализации.
-Некоторые невозможно реализовать. Ко всем тестам написал комментарии (для понимания).
-Буду рад любому комментарию, спасибо!
+Спасибо за замечания)
 */
 
     TaskManager taskManager = Managers.getDefault();
@@ -28,8 +24,9 @@ class InMemoryTaskManagerTest {
     void checkEqualsCreatedTask() {
         // проверьте, что экземпляры класса Task равны друг другу, если равен их id;
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
-        Task savedTask = taskManager.createTask(task1);
-        assertEquals(task1, savedTask);
+        taskManager.createTask(task1);
+        Task getTask = taskManager.getByTaskId(task1.getId());
+        assertEquals(task1, getTask);
     }
 
     @Test
@@ -51,25 +48,22 @@ class InMemoryTaskManagerTest {
 
     }
 
-
-
     @Test
-    void objectEpicCanNotMakPersonalSubtask() {
+    void objectEpicCanNotMakePersonalSubtask() {
         // // проверьте, что объект Subtask нельзя сделать своим же эпиком
-        Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
-        Epic epic1Created = taskManager.createEpic(epic1);
-        Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
-        // taskManager.createSubtask(epic1); // - не выполнимо
+        Subtask subtask1 = new Subtask(9, "Купить: ", "пластик. посуду ", Status.NEW);
+        assertNull(taskManager.createSubtask(subtask1));
 
     }
 
     @Test
-    void objectSubtaskCanNotMakPersonalEpic() {
-        // проверьте, что объект Subtask нельзя сделать своим же эпиком
+    void objectSubtaskCanNotMakePersonalEpic() {
+        // проверьте, что объект Epic нельзя добавить в самого себя в виде подзадачи
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
-        Epic epic1Created = taskManager.createEpic(epic1);
-        Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
-        // taskManager.createSubtask(epic1); // - не выполнимо
+          // epic1.setSubtasks(epic1);
+         /* - не выполнимо в моей реализации, так как в метод
+         setSubtasks(Subtask subtask) класса Epic, я добавляю экземпляр класса, а не Id.
+         Если критично - могу исправить метод и начать добавлять Id сабтаски.*/
     }
 
     @Test
@@ -77,20 +71,19 @@ class InMemoryTaskManagerTest {
         //Проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
         Task savedTask = taskManager.createTask(task1);
-        assertEquals(task1, savedTask);
+        assertEquals(task1.getId(), savedTask.getId());
 
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic savedEpic = taskManager.createEpic(epic1);
-        assertEquals(epic1, savedEpic);
+        assertEquals(epic1.getId(), savedEpic.getId());
 
         Subtask subtask1ForEpic1 = new Subtask(savedEpic.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
         Subtask saveSubtask1 = taskManager.createSubtask(subtask1ForEpic1);
-        assertEquals(subtask1ForEpic1, saveSubtask1);
+        assertEquals(subtask1ForEpic1.getId(), saveSubtask1.getId());
         Subtask subtask2ForEpic1 = new Subtask(savedEpic.getId(), "Не забыть: ", "палатку, пенки", Status.NEW);
         Subtask saveSubtask2 = taskManager.createSubtask(subtask2ForEpic1);
-        assertEquals(subtask2ForEpic1, saveSubtask2);
+        assertEquals(subtask2ForEpic1.getId(), saveSubtask2.getId());
     }
-
 
     @Test
     void checkIdConflict() {
@@ -102,19 +95,19 @@ class InMemoryTaskManagerTest {
         assertEquals(taskManager.getTasks().size(), 2);
     }
 
-
     @Test
     void taskFieldImmutability() {
         // создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
         Task savedTask1 = taskManager.createTask(task1);
         Task task2 = new Task("таск2.Имя", "таск2.Описание", Status.NEW);
-        taskManager.createTask(task2);
+        Task savedTask2 = taskManager.createTask(task2);
         Task task3 = new Task("таск3.Имя", "таск3.Описание", Status.NEW);
-        taskManager.createTask(task3);
-        assertEquals(savedTask1, task1);
+        Task savedTask3 = taskManager.createTask(task3);
+        assertEquals(savedTask1.getId(), task1.getId());
+        assertEquals(savedTask2.getId(), task2.getId());
+        assertEquals(savedTask3.getId(), task3.getId());
     }
-
 
     @Test
     void checkSaveLastVersionHistoryManager() {

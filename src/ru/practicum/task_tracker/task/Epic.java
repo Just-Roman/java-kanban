@@ -4,21 +4,21 @@ import java.util.ArrayList;
 
 public class Epic extends Task {
 
-    private ArrayList<Subtask> subtasks = new ArrayList<>();
+    private final ArrayList<Subtask> subtasks = new ArrayList<>();
 
 
     public Epic(String name, String description) {
         super(name, description);
-
     }
 
     public ArrayList<Subtask> getSubtasks() {
         return subtasks;
     }
 
-
-
     public void setSubtasks(Subtask subtask) {
+        if (subtask.getId() == this.getId()) {
+            return;
+        }
         subtasks.add(subtask);
     }
 

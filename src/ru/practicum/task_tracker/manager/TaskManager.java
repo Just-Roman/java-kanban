@@ -8,17 +8,21 @@ import java.util.List;
 
 public interface TaskManager {
 
-    public List getHistory();
+    public List<Task> getHistory();
 
     List<Task> getTasks();
+
+    Task getByTaskId(Integer taskId);
 
     Task createTask(Task task);
 
     Task updateTask(Task task);
 
-    boolean deliteTask(int taskId);
+    boolean deleteTask(int taskId);
 
     List<Epic> getEpics();
+
+    Epic getByEpickId(Integer epicId);
 
     Epic createEpic(Epic epic);
 
@@ -29,6 +33,8 @@ public interface TaskManager {
     void updateStatusEpic(Epic epic);
 
     List<Subtask> getSubtasks();
+
+    Subtask getBySubtaskId(Integer subtaskId);
 
     Subtask createSubtask(Subtask subtask);
 

@@ -1,7 +1,6 @@
 package ru.practicum.task_tracker;
 
 import ru.practicum.task_tracker.manager.HistoryManager;
-import ru.practicum.task_tracker.manager.InMemoryTaskManager;
 import ru.practicum.task_tracker.manager.TaskManager;
 import ru.practicum.task_tracker.task.Epic;
 import ru.practicum.task_tracker.task.Status;
@@ -15,8 +14,8 @@ public class Main {
     public static void main(String[] args) {
 
 
-        testTasks();
-      //  testEpicAndSubtask();
+       // testTasks();
+        testEpicAndSubtask();
 
     }
 
@@ -46,12 +45,14 @@ public class Main {
         System.out.println(taskManager.getHistory());
         System.out.println();
 
-        System.out.println("Тест 4: Удаление таски");
-        boolean deleteRes = taskManager.deliteTask(task1.getId());
+        System.out.println("Тест 4: Получение таски по Id");
+        System.out.println(taskManager.getByTaskId(task1.getId()));
+
+        System.out.println("Тест 5: Удаление таски");
+        boolean deleteRes = taskManager.deleteTask(task1.getId());
         System.out.println("Удаление должно пройти успешно: " + deleteRes);
         System.out.println("Список тасок пусой: " + taskManager.getTasks());
         System.out.println();
-
 
     }
 
@@ -73,7 +74,7 @@ public class Main {
         System.out.println(taskManager.getHistory());
         System.out.println();
 
-        System.out.println("Тест 7: Создание двух сабтасок для эпика1");
+        System.out.println("Тест 7: Создание двух сабтасок для эпика1"); // epic1Created.getId()
         Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
         taskManager.createSubtask(subtask1ForEpic1);
         System.out.println("Пепечень сабтасок для эпика1: " + taskManager.getSubtasks());
