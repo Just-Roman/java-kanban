@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
 
 /* Вячеслав, доброго дня!
-Спасибо за замечания)
+ С праздником!
 */
 
     TaskManager taskManager = Managers.getDefault();
@@ -45,7 +45,6 @@ class InMemoryTaskManagerTest {
         Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
         Subtask savedSubtask = taskManager.createSubtask(subtask1ForEpic1);
         assertEquals(subtask1ForEpic1, savedSubtask);
-
     }
 
     @Test
@@ -53,17 +52,6 @@ class InMemoryTaskManagerTest {
         // // проверьте, что объект Subtask нельзя сделать своим же эпиком
         Subtask subtask1 = new Subtask(9, "Купить: ", "пластик. посуду ", Status.NEW);
         assertNull(taskManager.createSubtask(subtask1));
-
-    }
-
-    @Test
-    void objectSubtaskCanNotMakePersonalEpic() {
-        // проверьте, что объект Epic нельзя добавить в самого себя в виде подзадачи
-        Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
-          // epic1.setSubtasks(epic1);
-         /* - не выполнимо в моей реализации, так как в метод
-         setSubtasks(Subtask subtask) класса Epic, я добавляю экземпляр класса, а не Id.
-         Если критично - могу исправить метод и начать добавлять Id сабтаски.*/
     }
 
     @Test

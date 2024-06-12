@@ -38,7 +38,10 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getByTaskId(Integer taskId) {
         if (taskId == null || !tasks.containsKey(taskId)) {
             return null;
-        } return tasks.get(taskId);
+        }
+        Task task = tasks.get(taskId);
+        historyManager.add(task);
+        return task;
     }
 
     @Override
@@ -72,10 +75,13 @@ public class InMemoryTaskManager implements TaskManager {
         return epicValues;
     }
 
-    public Epic getByEpickId(Integer epicId) {
+    public Epic getByEpicId(Integer epicId) {
         if (epicId == null || !epics.containsKey(epicId)) {
             return null;
-        } return epics.get(epicId);
+        }
+        Epic epic = epics.get(epicId);
+        historyManager.add(epic);
+        return epic;
     }
 
     @Override
@@ -151,7 +157,10 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask getBySubtaskId(Integer subtaskId) {
         if (subtaskId == null || !subtasks.containsKey(subtaskId)) {
             return null;
-        } return subtasks.get(subtaskId);
+        }
+        Subtask subtask = subtasks.get(subtaskId);
+        historyManager.add(subtask);
+        return subtask;
     }
 
     @Override
