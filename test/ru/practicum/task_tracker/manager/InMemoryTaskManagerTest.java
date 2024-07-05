@@ -1,5 +1,6 @@
 package ru.practicum.task_tracker.manager;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.Managers;
 import ru.practicum.task_tracker.task.Epic;
@@ -15,7 +16,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
 
 /* Вячеслав, доброго дня!
- С праздником!
+Последний тест ввел меня в ступор, т.к. нужно ли это реализовать или нет - не сказано.
+И на мой взгляд, если реализовать нужно, то будет очень много переделок.
+Если я в чем-то не прав - буду рад совету.
 */
 
     TaskManager taskManager = Managers.getDefault();
@@ -115,4 +118,59 @@ class InMemoryTaskManagerTest {
             }
         }
     }
+
+    @Test
+    void checkDeleteIdSubtask() {
+        // Удаляемые подзадачи не должны хранить внутри себя старые id.
+        Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
+        Epic savedEpic = taskManager.createEpic(epic1);
+
+        Subtask subtask1ForEpic1 = new Subtask(savedEpic.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
+        Subtask saveSubtask1 = taskManager.createSubtask(subtask1ForEpic1);
+
+        taskManager.deleteSubtask(saveSubtask1.getId());
+        Subtask getDeleteId = taskManager.getBySubtaskId(saveSubtask1.getId());
+        Integer deleteEpicIdInSubtask = saveSubtask1.getEpicId();
+
+        assertNull(getDeleteId);
+        assertEquals(deleteEpicIdInSubtask, 0);
+    }
+
+    @Test
+    void checkDeleteSubtaskForEpic() {
+     //  Внутри эпиков не должно оставаться неактуальных id подзадач.
+        Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
+        Epic savedEpic = taskManager.createEpic(epic1);
+
+        Subtask subtask1ForEpic1 = new Subtask(savedEpic.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
+        Subtask saveSubtask1 = taskManager.createSubtask(subtask1ForEpic1);
+
+        taskManager.deleteSubtask(saveSubtask1.getId());
+
+        Subtask getDeleteId = taskManager.getBySubtaskId(saveSubtask1.getId());
+        List <Subtask> subtaskInEpic = savedEpic.getSubtasks();
+
+        Integer subtask = 0;
+        if (subtaskInEpic.isEmpty()) {
+            subtask = null;
+        }
+
+        assertNull(getDeleteId);
+        assertEquals(getDeleteId, subtask);
+    }
+
+    @Test
+    void checkChangeSetter() {
+         /*С помощью сеттеров экземпляры задач позволяют изменить любое своё поле,
+         но это может повлиять на данные внутри менеджера.
+         Протестируйте эти кейсы и подумайте над возможными вариантами решения проблемы.*/
+        // Решение есть, но придется переделывать всю логику + все тесты + метод мэйн.
+        // Как один из вариантов вводить "голые данные" и не создавай объект класса типа "task1"
+        Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
+        Task savedTask1 = taskManager.createTask(task1);
+        task1.setId(9);
+        Task task = taskManager.getByTaskId(0);
+        assertEquals(task1, task);
+    }
+
 }

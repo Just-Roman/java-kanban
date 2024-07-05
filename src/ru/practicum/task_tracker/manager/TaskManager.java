@@ -22,7 +22,7 @@ public interface TaskManager {
 
     List<Epic> getEpics();
 
-    Epic getByEpickId(Integer epicId);
+    Epic getByEpicId(Integer epicId);
 
     Epic createEpic(Epic epic);
 
@@ -40,7 +40,7 @@ public interface TaskManager {
 
     Subtask updateSubtask(Subtask subtask);
 
-    boolean deleteSubtask(Integer id);
+    boolean deleteSubtask(int subtaskId);
 
     void deleteAllTasks();
 }
