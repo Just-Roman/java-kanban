@@ -22,21 +22,23 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             remove(task.getId());
             linkLast(task);
-        } else if (memory.isEmpty()) {
-            Node node = new Node(null, null, task);
-            memory.put(task.getId(), node);
-            first = node;
-            last = node;
-        } else {
+        }  else {
             linkLast(task);
         }
     }
 
     private void linkLast(Task task) {
-        Node node = new Node(last, null, task);
-        memory.put(task.getId(), node);
-        last = node;
-        node.prev.next = node;
+         if (first == null) {
+            Node node = new Node(null, null, task);
+            memory.put(task.getId(), node);
+            first = node;
+            last = node;
+        } else {
+             Node node = new Node(last, null, task);
+             memory.put(task.getId(), node);
+             last = node;
+             node.prev.next = node;
+         }
     }
 
     @Override
@@ -63,7 +65,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         } else if (node.prev == null) {
             node.next.prev = node.prev;
         } else if (node.next == null) {
-            node.prev.next = null;
+            node.prev.next = node.next;
         } else {
             node.prev.next = node.next;
             node.next.prev = node.prev;
@@ -75,7 +77,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         List <Task> memoryTasks = new ArrayList<>();
 
         if (memory.isEmpty()) {
-            return null;
+            return memoryTasks;
         } else {
             Node node = last;
             for (int i = 0; i < memory.size(); i++) {

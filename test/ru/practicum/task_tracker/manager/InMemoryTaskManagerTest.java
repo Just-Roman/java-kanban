@@ -16,9 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class InMemoryTaskManagerTest {
 
 /* Вячеслав, доброго дня!
-Последний тест ввел меня в ступор, т.к. нужно ли это реализовать или нет - не сказано.
-И на мой взгляд, если реализовать нужно, то будет очень много переделок.
-Если я в чем-то не прав - буду рад совету.
+
 */
 
     TaskManager taskManager = Managers.getDefault();
