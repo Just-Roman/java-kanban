@@ -51,7 +51,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeAll(){
+    public void removeAll() {
         memory.clear();
         first = null;
         last = null;
@@ -72,7 +72,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-        List <Task> memoryTasks = new ArrayList<>();
+        List<Task> memoryTasks = new ArrayList<>();
 
         if (memory.isEmpty()) {
             return memoryTasks;
