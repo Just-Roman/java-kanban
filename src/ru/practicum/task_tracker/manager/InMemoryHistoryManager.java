@@ -77,10 +77,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (memory.isEmpty()) {
             return memoryTasks;
         } else {
-            Node node = last;
+            Node node = first;
             for (int i = 0; i < memory.size(); i++) {
                 memoryTasks.add(node.value);
-                node = node.prev;
+                node = node.next;
             }
         }
         return memoryTasks;
