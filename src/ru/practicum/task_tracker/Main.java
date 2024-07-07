@@ -16,7 +16,7 @@ public class Main {
         testForSprint_6();
     }
 
-    private static void testForSprint_6(){
+    private static void testForSprint_6() {
         TaskManager taskManager = Managers.getDefault();
 
         System.out.println("Создание двух тасок.");
