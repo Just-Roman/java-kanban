@@ -1,6 +1,2 @@
 type,id,name,description,status,epicId
-TASK,0,таск1.Имя,таск1.Описание,NEW,null
-TASK,1,таск2.Имя,таск2.Описание,NEW,null
-EPIC,2,Поход в горы,обязательно с друзьями,NEW,null
-SUBTASK,3,Купить: ,пластик. посуду ,NEW,2
-SUBTASK,4,Не забыть: ,палатку,NEW,2
+EPIC,0,Поход в горы,обязательно с друзьями,NEW,null
