@@ -1,6 +1,5 @@
 package ru.practicum.task_tracker.manager;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.Managers;
 import ru.practicum.task_tracker.task.Epic;
@@ -11,7 +10,8 @@ import ru.practicum.task_tracker.task.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class InMemoryTaskManagerTest {
 
@@ -73,9 +73,9 @@ class InMemoryTaskManagerTest {
     @Test
     void checkIdConflict() {
         // проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
-        Task task1 = new Task(  "таск1.Имя", "таск1.Описание", Status.NEW);
+        Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
         taskManager.createTask(task1);
-        Task task2 = new Task( 0,"таск2.Имя", "таск2.Описание", Status.NEW);
+        Task task2 = new Task(0, "таск2.Имя", "таск2.Описание", Status.NEW);
         taskManager.createTask(task2);
         assertEquals(taskManager.getTasks().size(), 2);
     }
@@ -132,7 +132,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void checkDeleteSubtaskForEpic() {
-     //  Внутри эпиков не должно оставаться неактуальных id подзадач.
+        //  Внутри эпиков не должно оставаться неактуальных id подзадач.
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic savedEpic = taskManager.createEpic(epic1);
 
@@ -142,7 +142,7 @@ class InMemoryTaskManagerTest {
         taskManager.deleteSubtask(saveSubtask1.getId());
 
         Subtask getDeleteId = taskManager.getBySubtaskId(saveSubtask1.getId());
-        List <Subtask> subtaskInEpic = savedEpic.getSubtasks();
+        List<Subtask> subtaskInEpic = savedEpic.getSubtasks();
 
         Integer subtask = 0;
         if (subtaskInEpic.isEmpty()) {

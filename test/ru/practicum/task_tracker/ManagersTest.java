@@ -1,13 +1,10 @@
 package ru.practicum.task_tracker;
 
 import org.junit.jupiter.api.Test;
-import ru.practicum.task_tracker.manager.InMemoryHistoryManager;
-import ru.practicum.task_tracker.manager.InMemoryTaskManager;
 import ru.practicum.task_tracker.manager.TaskManager;
 import ru.practicum.task_tracker.task.Status;
 import ru.practicum.task_tracker.task.Task;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ManagersTest {

@@ -71,13 +71,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     bw.write(CSVFormatter.toString(task));
                     bw.newLine();
                 }
-            } if (!epics.isEmpty()) {
+            }
+            if (!epics.isEmpty()) {
                 for (Epic epic : epics) {
                     bw.write("EPIC,");
                     bw.write(CSVFormatter.toString(epic));
                     bw.newLine();
                 }
-            } if (!subtasks.isEmpty()) {
+            }
+            if (!subtasks.isEmpty()) {
                 for (Subtask subtask : subtasks) {
                     bw.write("SUBTASK,");
                     bw.write(CSVFormatter.toString(subtask));

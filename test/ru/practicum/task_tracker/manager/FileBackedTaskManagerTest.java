@@ -1,6 +1,5 @@
 package ru.practicum.task_tracker.manager;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.Managers;
 import ru.practicum.task_tracker.task.Epic;
@@ -10,7 +9,6 @@ import ru.practicum.task_tracker.task.Task;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FileBackedTaskManagerTest {

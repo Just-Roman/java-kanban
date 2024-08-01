@@ -2,7 +2,10 @@ package ru.practicum.task_tracker.manager;
 
 import ru.practicum.task_tracker.task.Task;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
@@ -26,17 +29,17 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     private void linkLast(Task task) {
-         if (first == null) {
+        if (first == null) {
             Node node = new Node(null, null, task);
             memory.put(task.getId(), node);
             first = node;
             last = node;
         } else {
-             Node node = new Node(last, null, task);
-             memory.put(task.getId(), node);
-             last = node;
-             node.prev.next = node;
-         }
+            Node node = new Node(last, null, task);
+            memory.put(task.getId(), node);
+            last = node;
+            node.prev.next = node;
+        }
     }
 
     @Override

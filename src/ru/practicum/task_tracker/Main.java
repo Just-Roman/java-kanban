@@ -131,9 +131,8 @@ public class Main {
         boolean deleteRes2 = taskManager.deleteTask(task2.getId());
         System.out.println("Удаление таск2 должно пройти успешно: " + deleteRes2);
         System.out.println("История просмотров" + taskManager.getHistory());
-       // System.out.println("Список тасок пусой: " + taskManager.getTasks());
+        // System.out.println("Список тасок пусой: " + taskManager.getTasks());
         System.out.println();
-
 
 
     }

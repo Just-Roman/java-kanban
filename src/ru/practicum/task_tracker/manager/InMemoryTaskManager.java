@@ -22,7 +22,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-       return historyManager.getHistory();
+        return historyManager.getHistory();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class InMemoryTaskManager implements TaskManager {
         for (Task task : taskValues) {
             historyManager.add(task);
         }
-        return  taskValues;
+        return taskValues;
     }
 
     public Task getByTaskId(Integer taskId) {
@@ -47,7 +47,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task createTask(Task task) {
         Integer id = task.getId();
         if (id == null) {
-            id =  getNextId();
+            id = getNextId();
             task.setId(id);
         }
         tasks.put(id, task);
@@ -67,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public boolean deleteTask(int taskId) {
         historyManager.remove(taskId);
-       return tasks.remove(taskId) != null;
+        return tasks.remove(taskId) != null;
     }
 
     @Override
@@ -92,7 +92,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic createEpic(Epic epic) {
         Integer id = epic.getId();
         if (id == null) {
-            id =  getNextId();
+            id = getNextId();
             epic.setId(id);
         }
         epics.put(id, epic);
@@ -177,7 +177,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Subtask createSubtask(Subtask subtask) {
         Integer id = subtask.getId();
         if (id == null) {
-            id =  getNextId();
+            id = getNextId();
             subtask.setId(id);
         }
 
@@ -214,7 +214,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         epic.removesubtaskById(subtask);
 
-         updateStatusEpic(epic);
+        updateStatusEpic(epic);
         return removesubtask;
     }
 
@@ -228,7 +228,7 @@ public class InMemoryTaskManager implements TaskManager {
 
 
     private int getNextId() {
-        return  nextId++;
+        return nextId++;
     }
 
     public void setNextId(Integer nextId) {
