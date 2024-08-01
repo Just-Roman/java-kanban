@@ -5,8 +5,6 @@ import ru.practicum.task_tracker.task.Status;
 import ru.practicum.task_tracker.task.Subtask;
 import ru.practicum.task_tracker.task.Task;
 
-import java.io.IOException;
-
 public class CSVFormatter {
 
     private CSVFormatter() {
@@ -38,7 +36,7 @@ public class CSVFormatter {
         return new Subtask(Integer.parseInt(columns[5]), Integer.parseInt(columns[1]), columns[2], columns[3], getStatus(columns[4]));
     }
 
-    private static Status getStatus (String str) {
+    private static Status getStatus(String str) {
         return switch (str) {
             case "IN_PROGRESS" -> Status.IN_PROGRESS;
             case "DONE" -> Status.DONE;
