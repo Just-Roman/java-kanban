@@ -15,10 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
-/* Вячеслав, доброго дня!
-
-*/
-
     TaskManager taskManager = Managers.getDefault();
 
     @Test
@@ -159,11 +155,6 @@ class InMemoryTaskManagerTest {
 
     @Test
     void checkChangeSetter() {
-         /*С помощью сеттеров экземпляры задач позволяют изменить любое своё поле,
-         но это может повлиять на данные внутри менеджера.
-         Протестируйте эти кейсы и подумайте над возможными вариантами решения проблемы.*/
-        // Решение есть, но придется переделывать всю логику + все тесты + метод мэйн.
-        // Как один из вариантов вводить "голые данные" и не создавай объект класса типа "task1"
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
         Task savedTask1 = taskManager.createTask(task1);
         task1.setId(9);

@@ -18,7 +18,6 @@ public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
-
     private int nextId;
 
     @Override
@@ -46,8 +45,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task createTask(Task task) {
-            task.setId(getNextId());
-        tasks.put(task.getId(), task);
+        Integer id = task.getId();
+        if (id == null) {
+            id =  getNextId();
+            task.setId(id);
+        }
+        tasks.put(id, task);
         return task;
     }
 
@@ -87,8 +90,12 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Epic createEpic(Epic epic) {
-        epic.setId(getNextId());
-        epics.put(epic.getId(), epic);
+        Integer id = epic.getId();
+        if (id == null) {
+            id =  getNextId();
+            epic.setId(id);
+        }
+        epics.put(id, epic);
         updateStatusEpic(epic);
         return epic;
     }
@@ -168,16 +175,22 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Subtask createSubtask(Subtask subtask) {
+        Integer id = subtask.getId();
+        if (id == null) {
+            id =  getNextId();
+            subtask.setId(id);
+        }
+
         int epicId = subtask.getEpicId();
         if (!epics.containsKey(epicId)) {
             return null;
         }
-        subtask.setId(getNextId());
+
         Epic epic = epics.get(subtask.getEpicId());
         epic.setSubtasks(subtask);
-        subtasks.put(subtask.getId(), subtask);
+        subtasks.put(id, subtask);
         updateStatusEpic(epic);
-        return subtasks.get(subtask.getId());
+        return subtasks.get(id);
     }
 
     @Override
@@ -216,6 +229,10 @@ public class InMemoryTaskManager implements TaskManager {
 
     private int getNextId() {
         return  nextId++;
+    }
+
+    public void setNextId(Integer nextId) {
+        this.nextId = nextId;
     }
 
 }

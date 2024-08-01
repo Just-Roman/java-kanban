@@ -43,4 +43,6 @@ public interface TaskManager {
     boolean deleteSubtask(int subtaskId);
 
     void deleteAllTasks();
+
+    public void setNextId(Integer nextId);
 }
