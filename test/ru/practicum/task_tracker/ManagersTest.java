@@ -16,6 +16,7 @@ class ManagersTest {
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
         Task savedTask = taskManager.createTask(task1);
         assertEquals(task1, savedTask);
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -23,8 +24,8 @@ class ManagersTest {
         // убедитесь, что утилитарный класс всегда возвращает проинициализированные и готовые к работе экземпляры менеджеров;
         TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("таск.Имя", "таск.Описание", Status.NEW);
-        taskManager.createTask(task1);
+        Task createdTask = taskManager.createTask(task1);
         taskManager.getTasks();
-        assertEquals(task1, taskManager.getHistory().getFirst());
+        assertEquals(createdTask, taskManager.getHistory().getFirst());
     }
 }

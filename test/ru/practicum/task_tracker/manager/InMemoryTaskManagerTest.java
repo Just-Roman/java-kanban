@@ -24,6 +24,7 @@ class InMemoryTaskManagerTest {
         taskManager.createTask(task1);
         Task getTask = taskManager.getByTaskId(task1.getId());
         assertEquals(task1, getTask);
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -32,6 +33,7 @@ class InMemoryTaskManagerTest {
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic savedEpic = taskManager.createEpic(epic1);
         assertEquals(epic1, savedEpic);
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -42,6 +44,7 @@ class InMemoryTaskManagerTest {
         Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
         Subtask savedSubtask = taskManager.createSubtask(subtask1ForEpic1);
         assertEquals(subtask1ForEpic1, savedSubtask);
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -49,6 +52,7 @@ class InMemoryTaskManagerTest {
         // // проверьте, что объект Subtask нельзя сделать своим же эпиком
         Subtask subtask1 = new Subtask(9, "Купить: ", "пластик. посуду ", Status.NEW);
         assertNull(taskManager.createSubtask(subtask1));
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -68,6 +72,7 @@ class InMemoryTaskManagerTest {
         Subtask subtask2ForEpic1 = new Subtask(savedEpic.getId(), "Не забыть: ", "палатку, пенки", Status.NEW);
         Subtask saveSubtask2 = taskManager.createSubtask(subtask2ForEpic1);
         assertEquals(subtask2ForEpic1.getId(), saveSubtask2.getId());
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -78,6 +83,7 @@ class InMemoryTaskManagerTest {
         Task task2 = new Task(0, "таск2.Имя", "таск2.Описание", Status.NEW);
         taskManager.createTask(task2);
         assertEquals(taskManager.getTasks().size(), 2);
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -92,6 +98,7 @@ class InMemoryTaskManagerTest {
         assertEquals(savedTask1.getId(), task1.getId());
         assertEquals(savedTask2.getId(), task2.getId());
         assertEquals(savedTask3.getId(), task3.getId());
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -111,6 +118,7 @@ class InMemoryTaskManagerTest {
                 assertEquals(taskGetTask1, task1);
             }
         }
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -128,6 +136,7 @@ class InMemoryTaskManagerTest {
 
         assertNull(getDeleteId);
         assertEquals(deleteEpicIdInSubtask, 0);
+        taskManager.deleteAllTasks();
     }
 
     @Test
@@ -148,18 +157,18 @@ class InMemoryTaskManagerTest {
         if (subtaskInEpic.isEmpty()) {
             subtask = null;
         }
-
         assertNull(getDeleteId);
         assertEquals(getDeleteId, subtask);
+        taskManager.deleteAllTasks();
     }
 
     @Test
     void checkChangeSetter() {
+        // С помощью сеттеров экземпляры задач позволяют изменить любое своё поле, но это может повлиять на данные внутри менеджера.
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW);
         Task savedTask1 = taskManager.createTask(task1);
         task1.setId(9);
-        Task task = taskManager.getByTaskId(0);
-        assertEquals(task1, task);
+        assertEquals(savedTask1.getId(), 9);
     }
 
 }

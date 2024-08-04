@@ -213,6 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
         epics.clear();
         historyManager.removeAll();
+        nextId = -1;
     }
 
     private int getNextId() {
