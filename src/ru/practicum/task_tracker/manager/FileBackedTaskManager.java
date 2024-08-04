@@ -7,58 +7,67 @@ import ru.practicum.task_tracker.task.Subtask;
 import ru.practicum.task_tracker.task.Task;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+    private static File file;
 
-    private static final String HOME = System.getProperty("user.dir");
-    private static final String fileName = "tasksFile.csv";
-    private static final Path TASKS_FILE_PATH = Paths.get(HOME, fileName);
+    FileBackedTaskManager(File file) {
+        this.file = file;
+    }
 
-    public static void loadFromFile(TaskManager taskManager) {
+    public static void loadFromFile(Path path) {
+        // FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
 
         try {
-            List<String> lines = Files.readAllLines(TASKS_FILE_PATH);
+            List<String> lines = Files.readAllLines(path);
             List<Integer> allIds = new ArrayList<>();
 
             for (int i = 1; i < lines.size(); i++) {
                 String row = lines.get(i);
                 int commaIndex = row.indexOf(",");
 
-                Task task = switch (row.substring(0, commaIndex)) {
-                    case "TASK" -> taskManager.createTask(CSVFormatter.taskFromString(row));
-                    case "EPIC" -> taskManager.createEpic(CSVFormatter.epicFromString(row));
-                    case "SUBTASK" -> taskManager.createSubtask(CSVFormatter.subtaskFromString(row));
-                    default -> null;
-                };
-                allIds.add(task.getId());
+                switch (row.substring(0, commaIndex)) {
+                    case "TASK":
+                        Task taskNew = CSVFormatter.taskFromString(row);
+                        int taskId = taskNew.getId();
+                        tasks.put(taskId, taskNew);
+                        allIds.add(taskId);
+                        break;
+                    case "EPIC":
+                        Epic epicNew = CSVFormatter.epicFromString(row);
+                        int epicId = epicNew.getId();
+                        epics.put(epicId, epicNew);
+                        allIds.add(epicId);
+                        break;
+                    case "SUBTASK":
+                        Subtask subtaskNew = CSVFormatter.subtaskFromString(row);
+                        int subtaskId = subtaskNew.getId();
+                        subtasks.put(subtaskId, subtaskNew);
+                        allIds.add(subtaskId);
+                        break;
+                }
             }
             if (!allIds.isEmpty()) {
-                taskManager.setNextId(Collections.max(allIds));
+                nextId = Collections.max(allIds);
             }
         } catch (IOException e) {
             throw ManagerSaveException.loadException(e);
         }
+        //  return fileBackedTaskManager;
     }
 
     private void save() {
 
-        try {
-            if (TASKS_FILE_PATH.getFileName() == null) {
-                Files.createFile(TASKS_FILE_PATH);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file.getName()))) {
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             bw.write(CSVFormatter.getHeader());
             bw.newLine();
 
@@ -131,12 +140,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         boolean deleteEpic = super.deleteEpic(epicId);
         save();
         return deleteEpic;
-    }
-
-    @Override
-    public void updateStatusEpic(Epic epic) {
-        super.updateStatusEpic(epic);
-        save();
     }
 
     @Override
