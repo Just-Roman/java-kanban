@@ -33,6 +33,10 @@ public class Task {
         this.id = id;
     }
 
+    public Integer getEpicId() {
+        return null;
+    }
+
     public String getDescription() {
         return description;
     }
