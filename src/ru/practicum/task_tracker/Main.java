@@ -7,35 +7,38 @@ import ru.practicum.task_tracker.task.Status;
 import ru.practicum.task_tracker.task.Subtask;
 import ru.practicum.task_tracker.task.Task;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Main {
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws Exception {
 
         testForSprint_6();
     }
 
-    private static void testForSprint_6() {
+    private static void testForSprint_6() throws Exception {
         TaskManager taskManager = Managers.getDefault();
-
+        LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
         System.out.println("Создание двух тасок.");
-        Task task1 = new Task("таск.Имя1", "таск.Описание1", Status.NEW);
+        Task task1 = new Task("таск.Имя1", "таск.Описание1", Status.NEW, 10, time1);
         taskManager.createTask(task1);
-        Task task2 = new Task("таск.Имя2", "таск.Описание2", Status.NEW);
+        Task task2 = new Task("таск.Имя2", "таск.Описание2", Status.NEW, 11, time1.plusDays(1));
         taskManager.createTask(task2);
         System.out.println();
 
         System.out.println("Создание эпика1 с тремя подзадачами.");
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic epic1Created = taskManager.createEpic(epic1);
-        Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
+        Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ",
+                "пластик. посуду ", Status.NEW, 12, time1.plusDays(2));
         taskManager.createSubtask(subtask1ForEpic1);
-        Subtask subtask2ForEpic1 = new Subtask(epic1Created.getId(), "Не забыть: ", "палатку, пенки", Status.NEW);
+        Subtask subtask2ForEpic1 = new Subtask(epic1Created.getId(), "Не забыть: ",
+                "палатку, пенки", Status.NEW, 13, time1.plusDays(3));
         taskManager.createSubtask(subtask2ForEpic1);
         System.out.println();
 
-        System.out.println("Создание эпика2 без подзадач.");
         Epic epic2 = new Epic("Поход в магазин", "за продуктами");
         taskManager.createEpic(epic2);
         System.out.println();
@@ -77,9 +80,10 @@ public class Main {
         System.out.println();
     }
 
-    private static void testTasks() {
+    private static void testTasks() throws Exception {
         TaskManager taskManager = Managers.getDefault();
         HistoryManager historyManager = Managers.getDefaultHistory();
+        LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
 
         System.out.println("Тест 1: Пустой список");
         List<Task> tasks = taskManager.getTasks();
@@ -91,7 +95,7 @@ public class Main {
         System.out.println();
 
         System.out.println("Тест 2: Создание таски");
-        Task task1 = new Task("таск.Имя", "таск.Описание", Status.NEW);
+        Task task1 = new Task("таск.Имя", "таск.Описание", Status.NEW, 20, time1);
         Task task1Created = taskManager.createTask(task1);
         System.out.println("Созданная таска должна содержать айди: " + (task1Created.getId() != null));
         System.out.println("Список тасок должен содержать нашу таску: " + taskManager.getTasks());
@@ -108,7 +112,7 @@ public class Main {
         System.out.println();
 
         System.out.println("Тест 3.1: Создание таски");
-        Task task2 = new Task("таск.Имя2", "таск.Описание2", Status.NEW);
+        Task task2 = new Task("таск.Имя2", "таск.Описание2", Status.NEW, 21, time1.plusDays(1));
         Task task2Created = taskManager.createTask(task2);
         System.out.println("Созданная таска должна содержать айди: " + (task2Created.getId() != null));
         System.out.println("Список тасок должен содержать нашу таску: " + taskManager.getTasks());
@@ -131,14 +135,15 @@ public class Main {
         boolean deleteRes2 = taskManager.deleteTask(task2.getId());
         System.out.println("Удаление таск2 должно пройти успешно: " + deleteRes2);
         System.out.println("История просмотров" + taskManager.getHistory());
-        // System.out.println("Список тасок пусой: " + taskManager.getTasks());
+        System.out.println("Список тасок пусой: " + taskManager.getTasks());
         System.out.println();
 
 
     }
 
-    private static void testEpicAndSubtask() {
+    private static void testEpicAndSubtask() throws Exception {
         TaskManager taskManager = Managers.getDefault();
+        LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
 
         System.out.println("Тест 5: Пустой список эпика");
         List<Epic> epics = taskManager.getEpics();
@@ -160,10 +165,12 @@ public class Main {
         System.out.println();
 
         System.out.println("Тест 7: Создание двух сабтасок для эпика1");
-        Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ", "пластик. посуду ", Status.NEW);
+        Subtask subtask1ForEpic1 = new Subtask(epic1Created.getId(), "Купить: ",
+                "пластик. посуду ", Status.NEW, 30, time1);
         taskManager.createSubtask(subtask1ForEpic1);
         System.out.println("Пепечень сабтасок для эпика1: " + taskManager.getSubtasks());
-        Subtask subtask2ForEpic1 = new Subtask(epic1Created.getId(), "Не забыть: ", "палатку, пенки", Status.NEW);
+        Subtask subtask2ForEpic1 = new Subtask(epic1Created.getId(), "Не забыть: ",
+                "палатку, пенки", Status.NEW, 31, time1.plusDays(1));
         taskManager.createSubtask(subtask2ForEpic1);
         System.out.println("Печать сабтасок для эпика1: " + taskManager.getSubtasks());
         System.out.println();

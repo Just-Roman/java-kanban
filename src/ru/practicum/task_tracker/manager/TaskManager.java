@@ -5,8 +5,11 @@ import ru.practicum.task_tracker.task.Subtask;
 import ru.practicum.task_tracker.task.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
+
+    Set<Task> getPrioritizedTasks();
 
     List<Task> getHistory();
 
@@ -14,9 +17,9 @@ public interface TaskManager {
 
     Task getByTaskId(Integer taskId);
 
-    Task createTask(Task task);
+    Task createTask(Task task) throws Exception;
 
-    Task updateTask(Task task);
+    Task updateTask(Task task) throws Exception;
 
     boolean deleteTask(int taskId);
 
@@ -36,9 +39,9 @@ public interface TaskManager {
 
     Subtask getBySubtaskId(Integer subtaskId);
 
-    Subtask createSubtask(Subtask subtask);
+    Subtask createSubtask(Subtask subtask) throws Exception;
 
-    Subtask updateSubtask(Subtask subtask);
+    Subtask updateSubtask(Subtask subtask) throws Exception;
 
     boolean deleteSubtask(int subtaskId);
 

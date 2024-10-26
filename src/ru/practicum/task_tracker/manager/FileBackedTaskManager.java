@@ -20,12 +20,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static File file;
 
     FileBackedTaskManager(File file) {
-        this.file = file;
+        FileBackedTaskManager.file = file;
     }
 
     public static void loadFromFile(Path path) {
-        // FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-
         try {
             List<String> lines = Files.readAllLines(path);
             List<Integer> allIds = new ArrayList<>();
@@ -61,7 +59,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw ManagerSaveException.loadException(e);
         }
-        //  return fileBackedTaskManager;
     }
 
     private void save() {
@@ -101,14 +98,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task createTask(Task task) {
+    public Task createTask(Task task) throws Exception {
         Task createTask = super.createTask(task);
         save();
         return createTask;
     }
 
     @Override
-    public Task updateTask(Task task) {
+    public Task updateTask(Task task) throws Exception {
         Task updateTask = super.updateTask(task);
         save();
         return updateTask;
@@ -143,14 +140,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Subtask createSubtask(Subtask subtask) {
+    public Subtask createSubtask(Subtask subtask) throws Exception {
         Subtask createSubtask = super.createSubtask(subtask);
         save();
         return createSubtask;
     }
 
     @Override
-    public Subtask updateSubtask(Subtask subtask) {
+    public Subtask updateSubtask(Subtask subtask) throws Exception {
         Subtask updateSubtask = super.updateSubtask(subtask);
         save();
         return updateSubtask;

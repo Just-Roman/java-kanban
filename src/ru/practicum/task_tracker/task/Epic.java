@@ -1,10 +1,13 @@
 package ru.practicum.task_tracker.task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Epic extends Task {
 
     private final ArrayList<Subtask> subtasks = new ArrayList<>();
+    private LocalDateTime endTime;
 
 
     public Epic(String name, String description) {
@@ -13,6 +16,11 @@ public class Epic extends Task {
 
     public Epic(Integer id, String name, String description, Status status) {
         super(id, name, description, status);
+    }
+
+
+    public Epic(Integer id, String name, String description, Status status, long duration, LocalDateTime startTime) {
+        super(id, name, description, status, duration, startTime);
     }
 
     public ArrayList<Subtask> getSubtasks() {
@@ -24,6 +32,31 @@ public class Epic extends Task {
             return;
         }
         subtasks.add(subtask);
+        setDurationAndLocalDateTime();
+    }
+
+    private void setDurationAndLocalDateTime() {
+
+        super.startTime = subtasks.stream()
+                .map(Task::getStartTime)
+                .min(LocalDateTime::compareTo)
+                .orElse(null);
+
+
+        super.duration = Duration.ofMinutes(subtasks.stream()
+                .map(Task::getDuration)
+                .reduce((long) 0, Long::sum)
+        );
+
+    }
+
+    public LocalDateTime getEndTime() {
+        LocalDateTime endDateTime = subtasks.stream()
+                .map(Task::getStartTime)
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
+        assert endDateTime != null;
+        return endDateTime.plus(duration);
     }
 
     public void clearsubtaskIds() {
@@ -40,8 +73,10 @@ public class Epic extends Task {
                 "id=" + this.getId() +
                 ", name='" + this.getName() + '\'' +
                 ", description='" + this.getDescription() + '\'' +
-                ", status=" + this.getStatus() +
-                ", subtasks=" + subtasks +
+                ", status=" + this.getStatus() + '\'' +
+                ", subtasks=" + subtasks + '\'' +
+                ", duration=" + duration + '\'' +
+                ", startTime=" + startTime +
                 '}' + "\n";
     }
 
