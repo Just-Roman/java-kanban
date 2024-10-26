@@ -26,7 +26,7 @@ class ManagersTest {
     void getDefaultHistory() throws Exception {
         // убедитесь, что утилитарный класс всегда возвращает проинициализированные и готовые к работе экземпляры менеджеров;
         TaskManager taskManager = Managers.getDefault();
-        Task task1 = new Task("таск.Имя", "таск.Описание", Status.NEW, 41, time1.plusDays(1));
+        Task task1 = new Task("таск.Имя", "таск.Описание", Status.NEW, 42, time1.plusDays(1));
         Task createdTask = taskManager.createTask(task1);
         taskManager.getTasks();
         assertEquals(createdTask, taskManager.getHistory().getFirst());
