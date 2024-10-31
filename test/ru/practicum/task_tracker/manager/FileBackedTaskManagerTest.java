@@ -22,11 +22,11 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private static final String fileName = "tasksFile.csv";
     private static final Path TASKS_FILE_PATH = Paths.get(HOME, fileName);
     LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
-    TaskManager taskManager = new FileBackedTaskManager(getFile());
+    FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(getFile());
 
     @AfterEach
     void clearManager() {
-        taskManager.deleteAllTasks();
+        fileBackedTaskManager.deleteAllTasks();
     }
 
     private File getFile() {
@@ -44,17 +44,17 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     public void testException() {
 //        Корректный перехват исключений при работе с файлами
         Path wrongPath = Paths.get(HOME, "sddfd/_.");
-        Assertions.assertThrows(RuntimeException.class, () -> FileBackedTaskManager.loadFromFile(wrongPath));
-        Assertions.assertDoesNotThrow(() -> FileBackedTaskManager.loadFromFile(TASKS_FILE_PATH));
+        Assertions.assertThrows(RuntimeException.class, () -> fileBackedTaskManager.loadFromFile(wrongPath));
+        Assertions.assertDoesNotThrow(() -> fileBackedTaskManager.loadFromFile(TASKS_FILE_PATH));
     }
 
     @Test
     void loadEmptyFile() {
         // Загрузка пустого файла
-        FileBackedTaskManager.loadFromFile(TASKS_FILE_PATH);
-        List<Task> get1 = taskManager.getTasks();
-        List<Epic> get2 = taskManager.getEpics();
-        List<Subtask> get3 = taskManager.getSubtasks();
+        fileBackedTaskManager.loadFromFile(TASKS_FILE_PATH);
+        List<Task> get1 = fileBackedTaskManager.getTasks();
+        List<Epic> get2 = fileBackedTaskManager.getEpics();
+        List<Subtask> get3 = fileBackedTaskManager.getSubtasks();
 
         assertEquals(get1.size(), 0);
         assertEquals(get1.size(), get2.size());
@@ -62,11 +62,11 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void saveFromFileTask() throws Exception {
+    void saveFromFileTask() {
         // Сохранение в файл
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 10, time1);
         Task createdTask1 = taskManager.createTask(task1);
-        FileBackedTaskManager.loadFromFile(TASKS_FILE_PATH);
+        fileBackedTaskManager.loadFromFile(TASKS_FILE_PATH);
         Task task2 = taskManager.getByTaskId(task1.getId());
 
         assertEquals(createdTask1.getId(), task2.getId());
@@ -76,7 +76,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     }
 
     @Test
-    void saveFromFile() throws Exception {
+    void saveFromFile() {
         // сохранение нескольких задач
 
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 11, time1.plusDays(1));
@@ -94,7 +94,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
                 "палатку", Status.NEW, 14, time1.plusDays(4));
         Subtask createdSubtask2 = taskManager.createSubtask(subtask2ForEpic1);
 
-        FileBackedTaskManager.loadFromFile(TASKS_FILE_PATH);
+        fileBackedTaskManager.loadFromFile(TASKS_FILE_PATH);
 
         List<Task> tasksGet2 = taskManager.getTasks();
         List<Epic> epicsGet2 = taskManager.getEpics();

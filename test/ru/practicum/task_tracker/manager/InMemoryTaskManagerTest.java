@@ -26,8 +26,8 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkTreeset() throws Exception {
-//        Проверка сортировки скиска
+    void checkTreeSet() {
+//        Проверка сортировки списка
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 23, time1);
         taskManager.createTask(task1);
 
@@ -45,20 +45,18 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "палатку, пенки", Status.DONE, 25, time1.plusDays(3));
         taskManager.createSubtask(subtask2ForEpic1);
 
-        InMemoryTaskManager taskManager2 = new InMemoryTaskManager();
-        taskManager2.deleteAllTasks();
-        taskManager2.createTask(task1);
-        taskManager2.createTask(task2);
-        taskManager2.createEpic(epic1);
-        taskManager2.createSubtask(subtask1ForEpic1);
-        taskManager2.createSubtask(subtask2ForEpic1);
+        List<Task> sortedEntity = new ArrayList<>(taskManager.getPrioritizedTasks());
 
-        assertEquals(taskManager.getPrioritizedTasks(), taskManager2.getPrioritizedTasks());
+        assertEquals(sortedEntity.get(0), task1);
+        assertEquals(sortedEntity.get(1), task2);
+        assertEquals(sortedEntity.get(2), subtask1ForEpic1);
+        assertEquals(sortedEntity.get(3), subtask2ForEpic1);
+        assertEquals(sortedEntity.size(), 4);
     }
 
 
     @Test
-    void checkEqualsCreatedTask() throws Exception {
+    void checkEqualsCreatedTask() {
         // проверьте, что экземпляры класса Task равны друг другу, если равен их id;
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 20, time1.plusDays(4));
         taskManager.createTask(task1);
@@ -67,7 +65,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkEqualsCreatedEpic() throws Exception {
+    void checkEqualsCreatedEpic() {
         // проверьте, что наследники класса Task равны друг другу, если равен их id;
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic savedEpic = taskManager.createEpic(epic1);
@@ -75,7 +73,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkEqualsCreatedSubtask() throws Exception {
+    void checkEqualsCreatedSubtask() {
         // проверьте, что наследники класса Task равны друг другу, если равен их id;
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic epic1Created = taskManager.createEpic(epic1);
@@ -86,7 +84,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void objectEpicCanNotMakePersonalSubtask() throws Exception {
+    void objectEpicCanNotMakePersonalSubtask() {
         // // проверьте, что объект Subtask нельзя сделать своим же эпиком
         Subtask subtask1 = new Subtask(9, "Купить: ",
                 "пластик. посуду ", Status.NEW, 22, time1.plusDays(6));
@@ -94,7 +92,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void inMemoryTaskManagerAddTaskSubtaskEpic() throws Exception {
+    void inMemoryTaskManagerAddTaskSubtaskEpic() {
         //Проверьте, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id;
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 23, time1.plusDays(7));
         Task savedTask = taskManager.createTask(task1);
@@ -115,7 +113,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkIdConflict() throws Exception {
+    void checkIdConflict() {
         // проверьте, что задачи с заданным id и сгенерированным id не конфликтуют внутри менеджера;
         Task task1 = new Task("таск1.Имя", "таск1.Описание",
                 Status.NEW, 26, time1.plusDays(10));
@@ -127,7 +125,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void taskFieldImmutability() throws Exception {
+    void taskFieldImmutability() {
         // создайте тест, в котором проверяется неизменность задачи (по всем полям) при добавлении задачи в менеджер
         Task task1 = new Task("таск1.Имя", "таск1.Описание",
                 Status.NEW, 27, time1.plusDays(12));
@@ -144,7 +142,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkSaveLastVersionHistoryManager() throws Exception {
+    void checkSaveLastVersionHistoryManager() {
         // убедитесь, что задачи, добавляемые в HistoryManager, сохраняют предыдущую версию задачи и её данных.
         Task task1 = new Task("таск1.Имя", "таск1.Описание",
                 Status.NEW, 30, time1.plusDays(15));
@@ -164,7 +162,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkDeleteIdSubtask() throws Exception {
+    void checkDeleteIdSubtask() {
         // Удаляемые подзадачи не должны хранить внутри себя старые id.
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic savedEpic = taskManager.createEpic(epic1);
@@ -182,7 +180,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkDeleteSubtaskForEpic() throws Exception {
+    void checkDeleteSubtaskForEpic() {
         //  Внутри эпиков не должно оставаться неактуальных id подзадач.
         Epic epic1 = new Epic("Поход в горы", "обязательно с друзьями");
         Epic savedEpic = taskManager.createEpic(epic1);
@@ -205,7 +203,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
     }
 
     @Test
-    void checkChangeSetter() throws Exception {
+    void checkChangeSetter() {
         // С помощью сеттеров экземпляры задач позволяют изменить любое своё поле, но это может повлиять на данные внутри менеджера.
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 33, time1.plusDays(19));
         Task savedTask1 = taskManager.createTask(task1);

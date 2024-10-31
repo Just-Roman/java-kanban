@@ -17,9 +17,9 @@ public interface TaskManager {
 
     Task getByTaskId(Integer taskId);
 
-    Task createTask(Task task) throws Exception;
+    Task createTask(Task task);
 
-    Task updateTask(Task task) throws Exception;
+    Task updateTask(Task task);
 
     boolean deleteTask(int taskId);
 
@@ -39,9 +39,9 @@ public interface TaskManager {
 
     Subtask getBySubtaskId(Integer subtaskId);
 
-    Subtask createSubtask(Subtask subtask) throws Exception;
+    Subtask createSubtask(Subtask subtask);
 
-    Subtask updateSubtask(Subtask subtask) throws Exception;
+    Subtask updateSubtask(Subtask subtask);
 
     boolean deleteSubtask(int subtaskId);
 

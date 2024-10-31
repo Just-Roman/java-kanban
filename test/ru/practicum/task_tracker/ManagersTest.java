@@ -13,7 +13,7 @@ class ManagersTest {
     LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
 
     @Test
-    void getDefault() throws Exception {
+    void getDefault() {
         // убедитесь, что утилитарный класс всегда возвращает проинициализированные и готовые к работе экземпляры менеджеров;
         TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("таск1.Имя", "таск1.Описание", Status.NEW, 40, time1);
@@ -23,7 +23,7 @@ class ManagersTest {
     }
 
     @Test
-    void getDefaultHistory() throws Exception {
+    void getDefaultHistory() {
         // убедитесь, что утилитарный класс всегда возвращает проинициализированные и готовые к работе экземпляры менеджеров;
         TaskManager taskManager = Managers.getDefault();
         Task task1 = new Task("таск.Имя", "таск.Описание", Status.NEW, 42, time1.plusDays(1));

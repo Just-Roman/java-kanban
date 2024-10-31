@@ -10,12 +10,16 @@ public class ManagerSaveException extends RuntimeException {
         super(msg, e);
     }
 
+    public ManagerSaveException(String msg) {
+        super(msg);
+    }
+
     public static ManagerSaveException saveException(Exception e) {
         return new ManagerSaveException(MSG_SAVE, e);
     }
 
     public static Exception customExeption(String msg) {
-        return new Exception(msg);
+        return new ManagerSaveException(msg);
     }
 
     public static ManagerSaveException loadException(Exception e) {

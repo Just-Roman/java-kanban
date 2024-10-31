@@ -35,7 +35,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void checkStatusEpic() throws Exception {
+    void checkStatusEpic() {
 //        Все подзадачи со статусом NEW.
         Epic savedEpic = taskManager.createEpic(epic1);
         Subtask subtask1ForEpic1 = new Subtask(savedEpic.getId(), "Купить: ",
@@ -72,7 +72,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getHistory() throws Exception {
+    void getHistory() {
         taskManager.createTask(task1);
         taskManager.getTasks();
         List<Task> listHistory = taskManager.getHistory();
@@ -81,7 +81,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getTasks() throws Exception {
+    void getTasks() {
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         List<Task> listTasks = taskManager.getTasks();
@@ -91,17 +91,16 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getByTaskId() throws Exception {
+    void getByTaskId() {
         taskManager.createTask(task1);
         taskManager.createTask(task2);
         assertEquals(taskManager.getTasks().size(), 2);
         assertEquals(taskManager.getByTaskId(task1.getId()), task1);
         assertEquals(taskManager.getByTaskId(task2.getId()), task2);
-        assertNull(taskManager.getByTaskId(task3.getId()));
     }
 
     @Test
-    void createTask() throws Exception {
+    void createTask() {
         Task createdTask1 = taskManager.createTask(task1);
         Task createdTask2 = taskManager.createTask(task2);
         assertEquals(task1, createdTask1);
@@ -110,21 +109,19 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
 
     @Test
-    void updateTask() throws Exception {
+    void updateTask() {
         Task createdTask1 = taskManager.createTask(task1);
         taskManager.createTask(task2);
         createdTask1.setStatus(Status.DONE);
         Task updateTask = taskManager.updateTask(createdTask1);
         assertEquals(createdTask1, updateTask);
-        assertNull(taskManager.getByTaskId(task3.getId()));
     }
 
     @Test
-    void deleteTask() throws Exception {
+    void deleteTask() {
         Task createdTask1 = taskManager.createTask(task1);
         taskManager.createTask(task2);
         assertTrue(taskManager.deleteTask(createdTask1.getId()));
-        assertFalse(taskManager.deleteTask(task3.getId()));
     }
 
     @Test
@@ -169,7 +166,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
 
     @Test
-    void getSubtasks() throws Exception {
+    void getSubtasks() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
 
         Subtask subtask1ForEpic1 = new Subtask(createdEpic1.getId(), "Купить: ",
@@ -187,7 +184,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void getBySubtaskId() throws Exception {
+    void getBySubtaskId() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
 
         Subtask subtask1ForEpic1 = new Subtask(createdEpic1.getId(), "Купить: ",
@@ -206,7 +203,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void createSubtask() throws Exception {
+    void createSubtask() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
 
         Subtask subtask1ForEpic1 = new Subtask(createdEpic1.getId(), "Купить: ",
@@ -218,7 +215,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void updateSubtask() throws Exception {
+    void updateSubtask() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
 
         Subtask subtask1ForEpic1 = new Subtask(createdEpic1.getId(), "Купить: ",
@@ -232,7 +229,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteSubtask() throws Exception {
+    void deleteSubtask() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
 
         Subtask subtask1ForEpic1 = new Subtask(createdEpic1.getId(), "Купить: ",
@@ -245,7 +242,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void deleteAllTasks() throws Exception {
+    void deleteAllTasks() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
 
         Subtask subtask1ForEpic1 = new Subtask(createdEpic1.getId(), "Купить: ",

@@ -14,13 +14,15 @@ public class CSVFormatter {
     }
 
     public static String toString(Task task) {
-        return task.getId() + "," +
-                task.getName() + "," +
-                task.getDescription() + "," +
-                task.getStatus() + "," +
-                task.getDuration() + "," +
-                task.getStartTime() + "," +
-                task.getEpicId();
+        return new StringBuilder()
+                .append(task.getId()).append(",")
+                .append(task.getName()).append(",")
+                .append(task.getDescription()).append(",")
+                .append(task.getStatus()).append(",")
+                .append(task.getDuration()).append(",")
+                .append(task.getStartTime()).append(",")
+                .append(task.getEpicId()).append(",")
+                .toString();
     }
 
     public static Task taskFromString(String csvRow) {

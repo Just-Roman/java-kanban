@@ -1,5 +1,6 @@
 package ru.practicum.task_tracker.manager;
 
+import ru.practicum.task_tracker.ManagerSaveException;
 import ru.practicum.task_tracker.Managers;
 import ru.practicum.task_tracker.task.Epic;
 import ru.practicum.task_tracker.task.Status;
@@ -13,12 +14,12 @@ import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    protected static Map<Integer, Task> tasks = new HashMap<>();
-    protected static Map<Integer, Epic> epics = new HashMap<>();
-    protected static Map<Integer, Subtask> subtasks = new HashMap<>();
-    protected static int nextId;
+    protected Map<Integer, Task> tasks = new HashMap<>();
+    protected Map<Integer, Epic> epics = new HashMap<>();
+    protected Map<Integer, Subtask> subtasks = new HashMap<>();
+    protected int nextId;
     protected Set<Task> sortedEntity = new TreeSet<>(this::sorted);
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    protected HistoryManager historyManager = Managers.getDefaultHistory();
 
     protected int sorted(Task o1, Task o2) {
         LocalDateTime startTime1 = o1.getStartTime();
@@ -30,23 +31,18 @@ public class InMemoryTaskManager implements TaskManager {
         return startTime1.compareTo(startTime2);
     }
 
-    protected void synchronizeSortedEntity() {
-        sortedEntity.clear();
-        sortedEntity.addAll(tasks.values());
-        sortedEntity.addAll(subtasks.values());
-
-    }
 
     public Set<Task> getPrioritizedTasks() {
         return sortedEntity;
     }
 
-    public boolean checkPeriodCrossing(LocalDateTime startTime, LocalDateTime endTime) {
+    public boolean checkPeriodCrossing(Task task) {
+        LocalDateTime startTime = task.getStartTime();
+        LocalDateTime endTime = task.getEndTime();
+
         return sortedEntity.stream()
                 .anyMatch(e ->
-                        !(e.getStartTime().isBefore(startTime) && e.getEndTime().isBefore(startTime)
-                                ||
-                                e.getStartTime().isAfter(endTime) && e.getEndTime().isAfter(endTime))
+                        !(e.getStartTime().isAfter(endTime) || e.getEndTime().isBefore(startTime))
                 );
     }
 
@@ -74,41 +70,41 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task createTask(Task task) throws Exception {
-        if (checkPeriodCrossing(task.getStartTime(), task.getEndTime())) {
-            throw new Exception("Период задачи пересекается с текущими");
+    public Task createTask(Task task) {
+        if (checkPeriodCrossing(task)) {
+            throw new ManagerSaveException("Период задачи пересекается с текущими");
         }
         task.setId(getNextId());
         int id = task.getId();
 
         tasks.put(id, task);
-        synchronizeSortedEntity();
+        sortedEntity.add(task);
         return tasks.get(id);
     }
 
     @Override
-    public Task updateTask(Task task) throws Exception {
-        Task oldTask = tasks.get(task.getId());
+    public Task updateTask(Task task) {
+        Integer taskId = task.getId();
+        Task oldTask = tasks.get(taskId);
         if (oldTask.getStartTime() != task.getStartTime() || oldTask.getDuration() != task.getDuration()) {
-            if (checkPeriodCrossing(task.getStartTime(), task.getEndTime())) {
-                throw new Exception("Период задачи пересекается с текущими");
+            if (checkPeriodCrossing(task)) {
+                throw new RuntimeException("Период задачи пересекается с текущими");
             }
         }
-        Integer taskId = task.getId();
         if (taskId == null || !tasks.containsKey(taskId)) {
             return null;
         }
         tasks.put(taskId, task);
-        synchronizeSortedEntity();
+        sortedEntity.remove(oldTask);
+        sortedEntity.add(task);
         return tasks.get(taskId);
     }
 
     @Override
     public boolean deleteTask(int taskId) {
         historyManager.remove(taskId);
-        boolean result = tasks.remove(taskId) != null;
-        synchronizeSortedEntity();
-        return result;
+        sortedEntity.remove(tasks.get(taskId));
+        return tasks.remove(taskId) != null;
     }
 
     @Override
@@ -151,14 +147,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public boolean deleteEpic(int epicId) {
-        Epic epic = epics.get(epicId);
-        for (Subtask subtask : epic.getSubtasks()) {
+        Epic oldEpic = epics.get(epicId);
+        for (Subtask subtask : oldEpic.getSubtasks()) {
             subtasks.remove(subtask.getId());
             historyManager.remove(subtask.getId());
         }
         boolean result = epics.remove(epicId) != null;
         historyManager.remove(epicId);
-        synchronizeSortedEntity();
         return result;
     }
 
@@ -211,55 +206,56 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask createSubtask(Subtask subtask) throws Exception {
-        if (checkPeriodCrossing(subtask.getStartTime(), subtask.getEndTime())) {
-            throw new Exception("Период задачи пересекается с текущими createSubtask");
+    public Subtask createSubtask(Subtask subtask) {
+        if (checkPeriodCrossing(subtask)) {
+            throw new ManagerSaveException("Период задачи пересекается с текущими");
         }
         int epicId = subtask.getEpicId();
         if (!epics.containsKey(epicId)) {
             return null;
         }
         subtask.setId(getNextId());
-        Epic epic = epics.get(subtask.getEpicId());
+        Epic epic = epics.get(epicId);
         epic.setSubtasks(subtask);
         int id = subtask.getId();
         subtasks.put(id, subtask);
         updateStatusEpic(epic);
-        synchronizeSortedEntity();
+        sortedEntity.add(subtask);
         return subtasks.get(id);
     }
 
     @Override
-    public Subtask updateSubtask(Subtask subtask) throws Exception {
-        Subtask oldSubtask = subtasks.get(subtask.getId());
+    public Subtask updateSubtask(Subtask subtask) {
+        Integer subtaskId = subtask.getId();
+        Subtask oldSubtask = subtasks.get(subtaskId);
         if (oldSubtask.getStartTime() != subtask.getStartTime() || oldSubtask.getDuration() != subtask.getDuration()) {
-            if (checkPeriodCrossing(subtask.getStartTime(), subtask.getEndTime())) {
-                throw new Exception("Период задачи пересекается с текущими updateSubtask");
+            if (checkPeriodCrossing(subtask)) {
+                throw new ManagerSaveException("Период задачи пересекается с текущими");
             }
         }
-        Integer subtaskId = subtask.getId();
         Epic epic = epics.get(subtask.getEpicId());
         if (subtaskId == null || !subtasks.containsKey(subtaskId)) {
             return null;
         }
+        sortedEntity.remove(oldSubtask);
+        sortedEntity.add(subtask);
         subtasks.put(subtaskId, subtask);
         updateStatusEpic(epic);
-        synchronizeSortedEntity();
         return subtasks.get(subtaskId);
     }
 
     @Override
     public boolean deleteSubtask(int subtaskId) {
         Subtask subtask = subtasks.get(subtaskId);
-        boolean removesubtask = subtasks.remove(subtask.getId()) != null;
+        boolean removeSubtask = subtasks.remove(subtask.getId()) != null;
         historyManager.remove(subtaskId);
 
         Epic epic = epics.get(subtask.getEpicId());
         epic.removesubtaskById(subtask);
 
         updateStatusEpic(epic);
-        synchronizeSortedEntity();
-        return removesubtask;
+        sortedEntity.remove(subtask);
+        return removeSubtask;
     }
 
     @Override

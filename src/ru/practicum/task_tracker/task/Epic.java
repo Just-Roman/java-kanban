@@ -51,12 +51,10 @@ public class Epic extends Task {
     }
 
     public LocalDateTime getEndTime() {
-        LocalDateTime endDateTime = subtasks.stream()
-                .map(Task::getStartTime)
+        return subtasks.stream()
+                .map(Task::getEndTime)
                 .max(LocalDateTime::compareTo)
                 .orElse(null);
-        assert endDateTime != null;
-        return endDateTime.plus(duration);
     }
 
     public void clearsubtaskIds() {

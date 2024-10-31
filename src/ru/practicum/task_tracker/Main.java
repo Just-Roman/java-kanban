@@ -13,12 +13,12 @@ import java.util.List;
 public class Main {
 
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
 
         testForSprint_6();
     }
 
-    private static void testForSprint_6() throws Exception {
+    private static void testForSprint_6() {
         TaskManager taskManager = Managers.getDefault();
         LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
         System.out.println("Создание двух тасок.");
@@ -80,7 +80,7 @@ public class Main {
         System.out.println();
     }
 
-    private static void testTasks() throws Exception {
+    private static void testTasks() {
         TaskManager taskManager = Managers.getDefault();
         HistoryManager historyManager = Managers.getDefaultHistory();
         LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
@@ -141,7 +141,7 @@ public class Main {
 
     }
 
-    private static void testEpicAndSubtask() throws Exception {
+    private static void testEpicAndSubtask() {
         TaskManager taskManager = Managers.getDefault();
         LocalDateTime time1 = LocalDateTime.of(2020, 1, 1, 13, 0);
 
