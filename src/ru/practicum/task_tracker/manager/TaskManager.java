@@ -5,8 +5,11 @@ import ru.practicum.task_tracker.task.Subtask;
 import ru.practicum.task_tracker.task.Task;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TaskManager {
+
+    Set<Task> getPrioritizedTasks();
 
     List<Task> getHistory();
 

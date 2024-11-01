@@ -20,12 +20,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     private static File file;
 
     FileBackedTaskManager(File file) {
-        this.file = file;
+        FileBackedTaskManager.file = file;
     }
 
-    public static void loadFromFile(Path path) {
-        // FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
-
+    public FileBackedTaskManager loadFromFile(Path path) {
+        FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(file);
         try {
             List<String> lines = Files.readAllLines(path);
             List<Integer> allIds = new ArrayList<>();
@@ -61,7 +60,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         } catch (IOException e) {
             throw ManagerSaveException.loadException(e);
         }
-        //  return fileBackedTaskManager;
+        return fileBackedTaskManager;
     }
 
     private void save() {

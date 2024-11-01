@@ -9,34 +9,36 @@ import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
+    private final Map<Integer, Node> memory = new HashMap<>();
     private Node first;
     private Node last;
-    private Map<Integer, Node> memory = new HashMap<>();
 
     @Override
     public void add(Task task) {
-        if (memory.containsKey(task.getId())) {
+        int taskId = task.getId();
+        if (memory.containsKey(taskId)) {
             if (memory.size() == 1) {
                 return;
-            } else if (memory.get(task.getId()) == last) {
+            } else if (memory.get(taskId) == last) {
                 last = last.prev;
-            } else if (memory.get(task.getId()) == first) {
+            } else if (memory.get(taskId) == first) {
                 first = first.next;
             }
-            remove(task.getId());
+            remove(taskId);
         }
         linkLast(task);
     }
 
     private void linkLast(Task task) {
+        int taskId = task.getId();
         if (first == null) {
             Node node = new Node(null, null, task);
-            memory.put(task.getId(), node);
+            memory.put(taskId, node);
             first = node;
             last = node;
         } else {
             Node node = new Node(last, null, task);
-            memory.put(task.getId(), node);
+            memory.put(taskId, node);
             last = node;
             node.prev.next = node;
         }
@@ -65,8 +67,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         } else if (node.prev == null) {
             node.next.prev = node.prev;
+            first = node.next;
         } else if (node.next == null) {
             node.prev.next = node.next;
+            last = node.prev;
         } else {
             node.prev.next = node.next;
             node.next.prev = node.prev;
