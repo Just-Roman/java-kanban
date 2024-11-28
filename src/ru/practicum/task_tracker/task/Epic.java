@@ -19,7 +19,7 @@ public class Epic extends Task {
     }
 
 
-    public Epic(Integer id, String name, String description, Status status, long duration, LocalDateTime startTime) {
+    public Epic(Integer id, String name, String description, Status status, Integer duration, LocalDateTime startTime) {
         super(id, name, description, status, duration, startTime);
     }
 
@@ -47,7 +47,6 @@ public class Epic extends Task {
                 .map(Task::getDuration)
                 .reduce((long) 0, Long::sum)
         );
-
     }
 
     public LocalDateTime getEndTime() {
@@ -61,7 +60,7 @@ public class Epic extends Task {
         subtasks.clear();
     }
 
-    public void removesubtaskById(Subtask subtask) {
+    public void removeSubtaskById(Subtask subtask) {
         subtasks.remove(subtask);
     }
 

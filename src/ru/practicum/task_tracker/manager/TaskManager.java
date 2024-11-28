@@ -31,7 +31,7 @@ public interface TaskManager {
 
     Epic updateEpic(Epic epic);
 
-    boolean deleteEpic(int epicId);
+    boolean deleteEpic(Integer epicId);
 
     void updateStatusEpic(Epic epic);
 
@@ -43,7 +43,7 @@ public interface TaskManager {
 
     Subtask updateSubtask(Subtask subtask);
 
-    boolean deleteSubtask(int subtaskId);
+    boolean deleteSubtask(Integer subtaskId);
 
     void deleteAllTasks();
 
