@@ -28,7 +28,7 @@ public class CSVFormatter {
     public static Task taskFromString(String csvRow) {
         String[] columns = csvRow.split(",");
         return new Task(Integer.parseInt(columns[1]), columns[2], columns[3], getStatus(columns[4]),
-                Long.parseLong(columns[5]), LocalDateTime.parse(columns[6]));
+                Integer.parseInt(columns[5]), LocalDateTime.parse(columns[6]));
     }
 
     public static Epic epicFromString(String csvRow) {
@@ -39,7 +39,7 @@ public class CSVFormatter {
     public static Subtask subtaskFromString(String csvRow) {
         String[] columns = csvRow.split(",");
         return new Subtask(Integer.parseInt(columns[7]), Integer.parseInt(columns[1]), columns[2],
-                columns[3], getStatus(columns[4]), Long.parseLong(columns[5]), LocalDateTime.parse(columns[6]));
+                columns[3], getStatus(columns[4]), Integer.parseInt(columns[5]), LocalDateTime.parse(columns[6]));
     }
 
     private static Status getStatus(String str) {

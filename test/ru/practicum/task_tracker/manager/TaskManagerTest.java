@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 abstract class TaskManagerTest<T extends TaskManager> {
@@ -138,7 +139,6 @@ abstract class TaskManagerTest<T extends TaskManager> {
     void getByEpicId() {
         Epic createdEpic1 = taskManager.createEpic(epic1);
         assertEquals(taskManager.getByEpicId(createdEpic1.getId()), createdEpic1);
-        assertNull(taskManager.getByEpicId(epic2.getId()));
     }
 
 

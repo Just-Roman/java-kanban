@@ -1,8 +1,10 @@
 package ru.practicum.task_tracker.manager;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.practicum.task_tracker.Managers;
+import ru.practicum.task_tracker.http.Exception.NotFoundException;
 import ru.practicum.task_tracker.task.Epic;
 import ru.practicum.task_tracker.task.Status;
 import ru.practicum.task_tracker.task.Subtask;
@@ -12,8 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
@@ -88,7 +89,7 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
         // // проверьте, что объект Subtask нельзя сделать своим же эпиком
         Subtask subtask1 = new Subtask(9, "Купить: ",
                 "пластик. посуду ", Status.NEW, 22, time1.plusDays(6));
-        assertNull(taskManager.createSubtask(subtask1));
+        Assertions.assertThrows(NotFoundException.class, () -> taskManager.createSubtask(subtask1));
     }
 
     @Test
@@ -171,12 +172,9 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "пластик. посуду ", Status.NEW, 31, time1.plusDays(16));
         Subtask saveSubtask1 = taskManager.createSubtask(subtask1ForEpic1);
 
-        taskManager.deleteSubtask(saveSubtask1.getId());
-        Subtask getDeleteId = taskManager.getBySubtaskId(saveSubtask1.getId());
-        Integer deleteEpicIdInSubtask = saveSubtask1.getEpicId();
-
-        assertNull(getDeleteId);
-        assertEquals(deleteEpicIdInSubtask, 0);
+        assertTrue(taskManager.deleteSubtask(saveSubtask1.getId()));
+        Assertions.assertThrows(NotFoundException.class, () -> taskManager.getBySubtaskId(saveSubtask1.getId()));
+        assertEquals(saveSubtask1.getEpicId(), 0);
     }
 
     @Test
@@ -189,17 +187,16 @@ class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
                 "пластик. посуду ", Status.NEW, 32, time1.plusDays(18));
         Subtask saveSubtask1 = taskManager.createSubtask(subtask1ForEpic1);
 
-        taskManager.deleteSubtask(saveSubtask1.getId());
+        assertTrue(taskManager.deleteSubtask(saveSubtask1.getId()));
 
-        Subtask getDeleteId = taskManager.getBySubtaskId(saveSubtask1.getId());
+        Assertions.assertThrows(NotFoundException.class, () -> taskManager.getBySubtaskId(saveSubtask1.getId()));
         List<Subtask> subtaskInEpic = savedEpic.getSubtasks();
 
         Integer subtask = 0;
         if (subtaskInEpic.isEmpty()) {
             subtask = null;
         }
-        assertNull(getDeleteId);
-        assertEquals(getDeleteId, subtask);
+        assertNull(subtask);
     }
 
     @Test

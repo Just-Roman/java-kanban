@@ -26,7 +26,7 @@ public class Task {
         this.status = status;
     }
 
-    public Task(String name, String description, Status status, long duration, LocalDateTime startTime) {
+    public Task(String name, String description, Status status, Integer duration, LocalDateTime startTime) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -35,7 +35,7 @@ public class Task {
     }
 
     // Конструктор для сохранения из файла
-    public Task(Integer id, String name, String description, Status status, long duration, LocalDateTime startTime) {
+    public Task(Integer id, String name, String description, Status status, Integer duration, LocalDateTime startTime) {
         this.id = id;
         this.name = name;
         this.description = description;

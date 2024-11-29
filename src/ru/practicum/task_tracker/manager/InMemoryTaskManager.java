@@ -1,7 +1,8 @@
 package ru.practicum.task_tracker.manager;
 
-import ru.practicum.task_tracker.ManagerSaveException;
 import ru.practicum.task_tracker.Managers;
+import ru.practicum.task_tracker.http.Exception.NotAcceptableException;
+import ru.practicum.task_tracker.http.Exception.NotFoundException;
 import ru.practicum.task_tracker.task.Epic;
 import ru.practicum.task_tracker.task.Status;
 import ru.practicum.task_tracker.task.Subtask;
@@ -62,7 +63,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Task getByTaskId(Integer taskId) {
         if (!tasks.containsKey(taskId) || taskId == null) {
-            return null;
+            throw new NotFoundException("Таска не найдена.");
         }
         Task task = tasks.get(taskId);
         historyManager.add(task);
@@ -72,7 +73,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task createTask(Task task) {
         if (checkPeriodCrossing(task)) {
-            throw new ManagerSaveException("Период задачи пересекается с текущими");
+            throw new NotAcceptableException("Время сохраняемой таски пересекается с текущими задачами.");
         }
         task.setId(getNextId());
         int id = task.getId();
@@ -85,14 +86,14 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task updateTask(Task task) {
         Integer taskId = task.getId();
-        Task oldTask = tasks.get(taskId);
-        if (oldTask.getStartTime() != task.getStartTime() || oldTask.getDuration() != task.getDuration()) {
-            if (checkPeriodCrossing(task)) {
-                throw new RuntimeException("Период задачи пересекается с текущими");
-            }
-        }
         if (taskId == null || !tasks.containsKey(taskId)) {
-            return null;
+            throw new NotFoundException("Обновляемая таска не найдена");
+        }
+        Task oldTask = tasks.get(taskId);
+        if (!oldTask.getStartTime().equals(task.getStartTime()) || oldTask.getDuration() != task.getDuration()) {
+            if (checkPeriodCrossing(task)) {
+                throw new NotAcceptableException("Время обновленной таски пересекается с текущими задачами.");
+            }
         }
         tasks.put(taskId, task);
         sortedEntity.remove(oldTask);
@@ -118,7 +119,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Epic getByEpicId(Integer epicId) {
         if (epicId == null || !epics.containsKey(epicId)) {
-            return null;
+            throw new NotFoundException("Эпик не найден");
         }
         Epic epic = epics.get(epicId);
         historyManager.add(epic);
@@ -138,7 +139,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Epic updateEpic(Epic epic) {
         Integer epicId = epic.getId();
         if (epicId == null || !epics.containsKey(epicId)) {
-            return null;
+            throw new NotFoundException("Обновляемый эпик не найден");
         }
         epics.put(epicId, epic);
         updateStatusEpic(epic);
@@ -146,7 +147,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteEpic(int epicId) {
+    public boolean deleteEpic(Integer epicId) {
+        if (epicId == null || !epics.containsKey(epicId)) {
+            return true;
+        }
         Epic oldEpic = epics.get(epicId);
         for (Subtask subtask : oldEpic.getSubtasks()) {
             subtasks.remove(subtask.getId());
@@ -198,7 +202,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     public Subtask getBySubtaskId(Integer subtaskId) {
         if (subtaskId == null || !subtasks.containsKey(subtaskId)) {
-            return null;
+            throw new NotFoundException("Сабтаск не найден.");
         }
         Subtask subtask = subtasks.get(subtaskId);
         historyManager.add(subtask);
@@ -208,11 +212,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask createSubtask(Subtask subtask) {
         if (checkPeriodCrossing(subtask)) {
-            throw new ManagerSaveException("Период задачи пересекается с текущими");
+            throw new NotAcceptableException("Время сохраняемой сабтаски пересекается с текущими задачами.");
         }
         int epicId = subtask.getEpicId();
         if (!epics.containsKey(epicId)) {
-            return null;
+            throw new NotFoundException("У сохраняемой сабтаски не найден эпик.");
         }
         subtask.setId(getNextId());
         Epic epic = epics.get(epicId);
@@ -227,16 +231,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask updateSubtask(Subtask subtask) {
         Integer subtaskId = subtask.getId();
+        if (subtaskId == null || !subtasks.containsKey(subtaskId)) {
+            throw new NotFoundException("Обновляемая сабтаска не найдена.");
+        }
         Subtask oldSubtask = subtasks.get(subtaskId);
-        if (oldSubtask.getStartTime() != subtask.getStartTime() || oldSubtask.getDuration() != subtask.getDuration()) {
+        if (!(oldSubtask.getStartTime().equals(subtask.getStartTime())) || oldSubtask.getDuration() != subtask.getDuration()) {
             if (checkPeriodCrossing(subtask)) {
-                throw new ManagerSaveException("Период задачи пересекается с текущими");
+                throw new NotAcceptableException("Время обновленной сабтаски пересекается с текущими задачами.");
             }
         }
         Epic epic = epics.get(subtask.getEpicId());
-        if (subtaskId == null || !subtasks.containsKey(subtaskId)) {
-            return null;
-        }
         sortedEntity.remove(oldSubtask);
         sortedEntity.add(subtask);
         subtasks.put(subtaskId, subtask);
@@ -245,13 +249,16 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public boolean deleteSubtask(int subtaskId) {
+    public boolean deleteSubtask(Integer subtaskId) {
+        if (subtaskId == null || !subtasks.containsKey(subtaskId)) {
+            return true;
+        }
         Subtask subtask = subtasks.get(subtaskId);
         boolean removeSubtask = subtasks.remove(subtask.getId()) != null;
         historyManager.remove(subtaskId);
 
         Epic epic = epics.get(subtask.getEpicId());
-        epic.removesubtaskById(subtask);
+        epic.removeSubtaskById(subtask);
 
         updateStatusEpic(epic);
         sortedEntity.remove(subtask);
